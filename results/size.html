@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Size of Python Serializations</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot.tooltip/0.8.5/jquery.flot.tooltip.min.js"></script>
+    <script language="javascript" type="text/javascript" src="script.js"></script>
+    <script type="text/javascript">
+
+    $(function() {
+
+        loadData({"Join": {"data": [[100000, 588889], [200000, 1288889], [300000, 1988889], [400000, 2688889], [500000, 3388889], [600000, 4088889], [700000, 4788889], [800000, 5488889], [900000, 6188889], [1000000, 6888889]], "label": "Join"}, "Pickle": {"data": [[100000, 368878], [200000, 869078], [300000, 1369278], [400000, 1869478], [500000, 2369678], [600000, 2869878], [700000, 3370078], [800000, 3870278], [900000, 4370478], [1000000, 4870678]], "label": "Pickle"}, "JSON": {"data": [[100000, 688890], [200000, 1488890], [300000, 2288890], [400000, 3088890], [500000, 3888890], [600000, 4688890], [700000, 5488890], [800000, 6288890], [900000, 7088890], [1000000, 7888890]], "label": "JSON"}, "uJSON": {"data": [[100000, 588891], [200000, 1288891], [300000, 1988891], [400000, 2688891], [500000, 3388891], [600000, 4088891], [700000, 4788891], [800000, 5488891], [900000, 6188891], [1000000, 6888891]], "label": "uJSON"}, "Marshal": {"data": [[100000, 500005], [200000, 1000005], [300000, 1500005], [400000, 2000005], [500000, 2500005], [600000, 3000005], [700000, 3500005], [800000, 4000005], [900000, 4500005], [1000000, 5000005]], "label": "Marshal"}, "MsgPack": {"data": [[100000, 368549], [200000, 868549], [300000, 1368549], [400000, 1868549], [500000, 2368549], [600000, 2868549], [700000, 3368549], [800000, 3868549], [900000, 4368549], [1000000, 4868549]], "label": "MsgPack"}, "BSON": {"data": [[100000, 1088906], [200000, 2288906], [300000, 3488906], [400000, 4688906], [500000, 5888906], [600000, 7088906], [700000, 8288906], [800000, 9488906], [900000, 10688906], [1000000, 11888906]], "label": "BSON"}, "CSV": {"data": [[100000, 588891], [200000, 1288891], [300000, 1988891], [400000, 2688891], [500000, 3388891], [600000, 4088891], [700000, 4788891], [800000, 5488891], [900000, 6188891], [1000000, 6888891]], "label": "CSV"}, "Struct": {"data": [[100000, 800000], [200000, 1600000], [300000, 2400000], [400000, 3200000], [500000, 4000000], [600000, 4800000], [700000, 5600000], [800000, 6400000], [900000, 7200000], [1000000, 8000000]], "label": "Struct"}});
+
+    });
+
+    </script>
+</head>
+<body>
+
+    <div id="header">
+        <h2>Size of Python Serializations</h2>
+    </div>
+
+    <div id="content">
+
+        <div class="flot-container">
+            <div id="placeholder" class="flot-placeholder"></div>
+            <p id="choices"></p>
+        </div>
+        <p><strong>X-Axis:</strong> data size, <strong>Y-Axis:</strong> serialized data (in bytes)</p>
+    </div>
+
+</body>
+</html>
