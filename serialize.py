@@ -10,65 +10,64 @@ MAX_LENGTH = 10**6 # One Million
 STEPS = 10
 
 class Test():
-    @classmethod
-    def serialize(cls, data: List[int]) -> str:
-        return cls.module.dumps(data)
 
-    @classmethod
-    def deserialize(cls, data: str) -> List[int]:
-        return cls.module.loads(data)
+    def __init__(self): pass
 
-    @classmethod
-    def getDeserializeInput(cls, data: List[int]) -> str:
-        return cls.serialize(data)
+    def serialize(self, data: List[int]) -> str:
+        return self.module.dumps(data)
+
+    def deserialize(self, data: str) -> List[int]:
+        return self.module.loads(data)
+
+    def getDeserializeInput(self, data: List[int]) -> str:
+        return self.serialize(data)
+
+    def initialize(self, dataLen: int) -> None:
+        return
 
 class Join(Test):
-    @classmethod
-    def serialize(cls, data: List[int]) -> str:
+    def serialize(self, data: List[int]) -> str:
         return ','.join(repr(x) for x in data)
 
-    @classmethod
-    def deserialize(cls, data: str):
+    def deserialize(self, data: str):
         return [int(x) for x in data.split(',')]
 
 class CSV(Test):
-    @classmethod
-    def serialize(cls, data: List[int], f: io.StringIO) -> None:
+    def serialize(self, data: List[int], f: io.StringIO) -> None:
+        # Technically, I could move the reader/writer creation
+        # out of these methods into the constructor. However,
+        # the instantiation of the csv objects should have a
+        # negligible impact on performance
         import csv
         f.seek(0)
         writer = csv.writer(f)
         writer.writerow(data)
 
-    @classmethod
-    def deserialize(cls, data: io.StringIO) -> List[int]:
+    def deserialize(self, data: io.StringIO) -> List[int]:
         import csv
         data.seek(0)
         reader = csv.reader(data)
         return next(reader)
 
-    @classmethod
-    def getDeserializeInput(cls, data: List[int]) -> io.StringIO:
+    def getDeserializeInput(self, data: List[int]) -> io.StringIO:
         f = io.StringIO()
-        cls.serialize(data, f)
+        self.serialize(data, f)
         f.seek(0)
         return f
 
 class Struct(Test):
-    @classmethod
-    def serialize(cls, data: List[int], dataLen: int) -> str:
+    def __init__(self, dataLen: int):
         from struct import Struct
-        s = Struct('l'*dataLen)
-        return s.pack(*data)
+        self.module = Struct('l'*dataLen)
 
-    @classmethod
-    def deserialize(cls, data: str, dataLen: int) -> List[int]:
-        from struct import Struct
-        s = Struct('l'*dataLen)
-        return s.unpack(data)
+    def serialize(self, data: List[int]) -> str:
+        return self.module.pack(*data)
 
-    @classmethod
-    def getDeserializeInput(cls, data: List[int]) -> str:
-        return cls.serialize(data, len(data))
+    def deserialize(self, data: str) -> List[int]:
+        return self.module.unpack(data)
+
+    def getDeserializeInput(self, data: List[int]) -> str:
+        return self.serialize(data)
 
 class Pickle(Test):
     import pickle
@@ -87,13 +86,11 @@ class uJSON(Test):
     module = ujson
 
 class BSON(Test):
-    @classmethod
-    def serialize(cls, data: List[int]) -> str:
+    def serialize(self, data: List[int]) -> str:
         import bson
         return bson.dumps({'data':data})
 
-    @classmethod
-    def deserialize(cls, data: str) -> List[int]:
+    def deserialize(self, data: str) -> List[int]:
         import bson
         return bson.loads(data)['data']
 
@@ -113,13 +110,15 @@ def profile(data, cls):
     kwargs_serialize = {'data': data }
     kwargs_deserialize = {}
 
-    obj = cls()
+    if cls.__init__.__annotations__.get('dataLen') == int:
+        obj = cls(dataLen=len(data))
+    else:
+        obj = cls()
+
     f = None
 
     if obj.serialize.__annotations__.get('f') == io.StringIO:
         kwargs_serialize['f'] = f = io.StringIO()
-    if obj.serialize.__annotations__.get('dataLen') == int:
-        kwargs_serialize['dataLen'] = kwargs_deserialize['dataLen'] = len(data)
 
     serializedOutput = kwargs_deserialize['data'] = obj.getDeserializeInput(data)
 
@@ -133,7 +132,7 @@ def export(*args, data):
     print()
     print('[ %s ]' % ' '.join(args))
     print(
-        JSON.serialize({
+        JSON().serialize({
             cls.__name__: {
                 'label': cls.__name__,
                 'data': list(data[cls])
